@@ -1,0 +1,12 @@
+{
+  "github.copilot.enable": {
+    "*": false,
+    "plaintext": false,
+    "markdown": false,
+    "scminput": false
+  },
+  "github.copilot.editor.enableAutoCompletions": false,
+  "editor.inlineSuggest.enabled": false,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000
+}
