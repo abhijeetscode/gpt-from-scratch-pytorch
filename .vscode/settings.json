@@ -7,6 +7,21 @@
   },
   "github.copilot.editor.enableAutoCompletions": false,
   "editor.inlineSuggest.enabled": false,
-  "files.autoSave": "afterDelay",
-  "files.autoSaveDelay": 1000
+  "files.autoSave": "onFocusChange",
+  "terminal.integrated.fontFamily": "Fira Code iScript",
+  "terminal.integrated.fontSize": 16,
+  "python-envs.defaultEnvManager": "ms-python.python:venv",
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.ruff": "explicit",
+      "source.organizeImports.ruff": "explicit"
+    }
+  },
+  "notebook.formatOnSave.enabled": true,
+  "notebook.codeActionsOnSave": {
+    "notebook.source.fixAll.ruff": "explicit",
+    "notebook.source.organizeImports.ruff": "explicit"
+  }
 }
