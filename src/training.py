@@ -3,6 +3,7 @@ from typing import cast
 import torch
 
 from gpt import AbbyGPT
+from inference import Inference
 from my_tokenizer import MyCharTokenizer
 from settings import settings
 
@@ -51,10 +52,13 @@ if __name__ == "__main__":
         optimizer.step()
         print("Loss :: ", loss.item())
 
-    model.eval()
-    xs_test = cast(torch.Tensor, tokenizer.encode("I HAD al", return_pt=True))
-    xs_test = xs_test.to(settings.device)
-    prob_test = model(xs_test)
-    pred_test = torch.argmax(prob_test, dim=-1)
-    op: str = tokenizer.decode(pred_test.flatten().tolist())
-    print("===> ", op)
+    inference = Inference(model=model, tokenizer=tokenizer)
+    op = inference.pre_training(x="I HAD al")
+    print(op)
+    # model.eval()
+    # xs_test = cast(torch.Tensor, tokenizer.encode("I HAD al", return_pt=True))
+    # xs_test = xs_test.to(settings.device)
+    # prob_test = model(xs_test)
+    # pred_test = torch.argmax(prob_test, dim=-1)
+    # op: str = tokenizer.decode(pred_test.flatten().tolist())
+    # print("===> ", op)

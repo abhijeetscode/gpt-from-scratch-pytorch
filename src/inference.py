@@ -22,5 +22,5 @@ class Inference:
             )
         )
         preds = torch.argmax(probs, dim=-1)
-        self.tokenizer.decode(preds.flatten().tolist())
-        return ""
+        op = self.tokenizer.decode(preds.flatten().tolist())
+        return op
