@@ -42,15 +42,16 @@ class FlashAttention(nn.Module):
         # create a range of context length with step size is tile size
         for i in range(0, length, self.tile_size):
             q_tile = q[..., i : i + self.tile_size, :]  # (T, D)
-            running_max = torch.full((self.tile_size, 1), -math.inf, device=x.device)
-            running_denom = torch.zeros((self.tile_size, 1), device=x.device)
-            running_nume = torch.zeros((self.tile_size, self.head_dim), device=x.device)
+            q_len: int = q_tile.shape[-2]
+            running_max = torch.full((q_len, 1), -math.inf, device=x.device)
+            running_denom = torch.zeros((q_len, 1), device=x.device)
+            running_nume = torch.zeros((q_len, self.head_dim), device=x.device)
             # one query tile will multiply with each key tile
             # one query tile multiple with key tiles in tile by tile. at the end one query tile will multiply each key tile but in the inner for loop we are doing step by step
             # not at once
             # at then end we need attention scores of each position with respect every other position
             # in this code we are doing tile by tile
-            for j in range(0, self.context_length, self.tile_size):
+            for j in range(0, length, self.tile_size):
                 # need this, because we dont want to see future token
                 # therefore we are contunuing
                 if j > i:
@@ -61,7 +62,7 @@ class FlashAttention(nn.Module):
                     q_tile @ k_tile.transpose(-2, -1) / math.sqrt(self.head_dim)
                 )  #  (T, T)
                 if i == j:
-                    attn_scores += mask
+                    attn_scores += mask[:q_len, :q_len]
                 new_max = torch.maximum(
                     running_max, torch.amax(attn_scores, dim=-1, keepdim=True)
                 )

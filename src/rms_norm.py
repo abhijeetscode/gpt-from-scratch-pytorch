@@ -9,7 +9,7 @@ class RMSNorm(nn.Module):
         super().__init__()
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return x / torch.sqrt(torch.mean(x**2, dim=-1, keepdim=True)) + 1e-8
+        return x / torch.sqrt(torch.mean(x**2, dim=-1, keepdim=True) + 1e-8)
 
 
 if __name__ == "__main__":
