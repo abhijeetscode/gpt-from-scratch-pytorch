@@ -30,16 +30,17 @@ class FlashAttention(nn.Module):
         # embedding dim is E
         # head_dim is D
         # tile size is T
+        length: int = x.shape[1]
         q = self.W_q(x)  # (L, D)
         k = self.W_k(x)  # (L, D)
         v = self.W_v(x)  # (L, D)
 
         output_buffer = torch.zeros(
-            (x.shape[0], self.context_length, self.head_dim), device=x.device
+            (x.shape[0], length, self.head_dim), device=x.device
         )
 
         # create a range of context length with step size is tile size
-        for i in range(0, self.context_length, self.tile_size):
+        for i in range(0, length, self.tile_size):
             q_tile = q[..., i : i + self.tile_size, :]  # (T, D)
             running_max = torch.full((self.tile_size, 1), -math.inf, device=x.device)
             running_denom = torch.zeros((self.tile_size, 1), device=x.device)
