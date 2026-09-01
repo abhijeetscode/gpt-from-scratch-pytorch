@@ -59,4 +59,4 @@ if __name__ == "__main__":
     # torch.export.save(exported_model, "abby_gpt.pt2")
     inference = Inference(model=model, tokenizer=tokenizer)
     op = inference.pre_training(x="I Love you India")
-    print(op)
+    print("===> ", op)
