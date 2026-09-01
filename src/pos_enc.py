@@ -25,7 +25,7 @@ class PositionalEncoding(nn.Module):
         self.register_buffer("pos_encoding", pos_encoding, persistent=False)
 
     def forward(self, x: torch.Tensor):
-        _, length, _ = x.shape
+        b, length, _ = x.shape
         return x + self.pos_encoding[0:length, :]  # type: ignore
 
 

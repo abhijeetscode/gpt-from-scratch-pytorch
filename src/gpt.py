@@ -23,7 +23,9 @@ class AbbyGPT(nn.Module):
         self.posn_encodings = PositionalEncoding().to(settings.device)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
+        x = x.flatten(0, 1)
         x = self.embedding_layer(x)
+
         if x.ndim == 2:
             x = torch.unsqueeze(x, 0)
         x = self.posn_encodings(x)

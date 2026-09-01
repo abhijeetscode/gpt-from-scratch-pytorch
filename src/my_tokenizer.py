@@ -1,5 +1,9 @@
 import torch
 
+from settings import settings
+
+BATCH_SIZE = settings.batch_size
+
 
 class MyCharTokenizer:
     def fit(self, x: str) -> None:

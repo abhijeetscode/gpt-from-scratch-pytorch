@@ -11,5 +11,7 @@ class Settings(BaseSettings):
     num_trf_blocks: int = 12
     epochs: int = 5
 
+    batch_size: int = 32
+
 
 settings = Settings()
