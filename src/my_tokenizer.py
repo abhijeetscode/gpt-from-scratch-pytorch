@@ -1,8 +1,34 @@
 import torch
 
-from settings import settings
 
-BATCH_SIZE = settings.batch_size
+def train_mybpe_tokenizer():
+    from tokenizers import (
+        Tokenizer,
+        decoders,
+        models,
+        normalizers,
+        pre_tokenizers,
+        trainers,
+    )
+
+    tokenizer = Tokenizer(models.BPE(byte_fallback=True))
+    tokenizer.normalizer = normalizers.NFKC()
+    tokenizer.pre_tokenizer = pre_tokenizers.ByteLevel(
+        add_prefix_space=True, use_regex=False
+    )
+    tokenizer.decoder = decoders.ByteLevel()
+    my_trainer = trainers.BpeTrainer(
+        min_frequency=2,
+        special_tokens=["[BOS]", "[EOS]", "[PAD]"],
+        show_progress=True,
+    )
+    tokenizer.train(
+        files=["/Users/ab/Documents/Personal/rope_moe/data/verdict.txt"],
+        trainer=my_trainer,
+    )
+    tokenizer.save("./bpe_tokenizer.json")
+
+    return tokenizer
 
 
 class MyCharTokenizer:
@@ -29,3 +55,26 @@ class MyCharTokenizer:
 
     def decode(self, x: list[int]) -> str:
         return "".join([self.int_to_char[index] for index in x])
+
+    def save(self) -> bool:
+        import json
+
+        with open("./tokenizer.json", "w") as fp:
+            json.dump(self.char_to_int, fp, indent=4)
+            return True
+        return False
+
+    @classmethod
+    def load(cls) -> MyCharTokenizer:
+        import json
+
+        self = cls()
+        with open("./tokenizer.json") as fp:
+            self.char_to_int = json.load(fp)
+            self.int_to_char = {i: c for c, i in self.char_to_int.items()}
+            self.vocab_size = len(self.int_to_char.keys())
+            return self
+
+
+if __name__ == "__main__":
+    train_mybpe_tokenizer()

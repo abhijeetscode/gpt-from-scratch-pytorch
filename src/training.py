@@ -1,23 +1,19 @@
-from typing import cast
-
 import torch
+from tokenizers import Tokenizer
 
 from gpt import AbbyGPT
-from my_tokenizer import MyCharTokenizer
 from settings import settings
 
 if __name__ == "__main__":
     with open("../data/verdict.txt") as fp:
         data = fp.read()
 
-    tokenizer = MyCharTokenizer()
-    tokenizer.fit(data)
-    token_indices: torch.Tensor = cast(
-        torch.Tensor, tokenizer.encode(data, return_pt=True)
+    my_bpe_tokenizer = Tokenizer.from_file("./bpe_tokenizer.json")
+    encoding = my_bpe_tokenizer.encode(data)
+    token_indices: torch.Tensor = torch.Tensor(encoding.ids).to(
+        dtype=torch.long,
+        device=settings.device,
     )
-
-    decoded_data = tokenizer.decode(token_indices.tolist())
-    assert decoded_data == data, "something is wrong with tokenizer"
 
     # assert torch.max(token_indices).item()+1 == tokenizer.vocab_size, "vocab size and max token index not matching"
     print("Total number of tokens :: ", len(token_indices))
@@ -48,7 +44,7 @@ if __name__ == "__main__":
     num_batches: int = xs.shape[0]
     print("== Num Batches == ", num_batches)
 
-    model = AbbyGPT(vocab_size=tokenizer.vocab_size).to(settings.device)
+    model = AbbyGPT(vocab_size=my_bpe_tokenizer.get_vocab_size()).to(settings.device)
     loss_func = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     model.train()
@@ -66,7 +62,7 @@ if __name__ == "__main__":
             optimizer.step()
             loss_for_epoch += loss.item()
         print(f"Epoch {e + 1} Loss {loss_for_epoch / num_batches:.4f}")
-
-    # inference = Inference(model=model, tokenizer=tokenizer)
-    # op = inference.pre_training(x="Hello")
-    # print("===> ", op)
+    model.eval()
+    example_input = xs[0, ...].unsqueeze(0)
+    exported_program = torch.export.export(model, args=(example_input,))
+    torch.export.save(exported_program, "AbbyGPT.pt2")

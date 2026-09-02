@@ -2,13 +2,12 @@ from typing import cast
 
 import torch
 
-from gpt import AbbyGPT
 from my_tokenizer import MyCharTokenizer
 from settings import settings
 
 
 class Inference:
-    def __init__(self, model: AbbyGPT, tokenizer: MyCharTokenizer) -> None:
+    def __init__(self, model, tokenizer) -> None:
         self.model = model
         self.tokenizer = tokenizer
 
@@ -42,3 +41,18 @@ class Inference:
                 tokens[current_initial_length] = pred_token_index
                 current_initial_length += 1
         return self.tokenizer.decode(tokens[:current_initial_length].tolist())
+
+
+if __name__ == "__main__":
+    from inference import Inference
+    from my_tokenizer import MyCharTokenizer
+
+    tokenizer = MyCharTokenizer.load()
+    text = "I Love India"
+    token_indices: list[int] = cast(list[int], tokenizer.encode(text))
+    decodex_text: str = tokenizer.decode(token_indices)
+    assert decodex_text == text, "Something is wrong with Tokenizer"
+    model = torch.export.load("./AbbyGPT.pt2").module()
+    infer = Inference(model=model, tokenizer=tokenizer)
+    op = infer.pre_training("How are ", 20)
+    print("OP --> ", op)
