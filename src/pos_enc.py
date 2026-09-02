@@ -26,7 +26,7 @@ class PositionalEncoding(nn.Module):
 
     def forward(self, x: torch.Tensor):
         b, length, _ = x.shape
-        return x + self.pos_encoding[0:length, :]  # type: ignore
+        return x + self.pos_encoding[:length, :]  # type: ignore
 
 
 if __name__ == "__main__":

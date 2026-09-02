@@ -17,6 +17,7 @@ if __name__ == "__main__":
 
     # assert torch.max(token_indices).item()+1 == tokenizer.vocab_size, "vocab size and max token index not matching"
     print("Total number of tokens :: ", len(token_indices))
+    print("Vocab Size :: ", my_bpe_tokenizer.get_vocab_size())
 
     xts = []
     yts = []
@@ -62,7 +63,16 @@ if __name__ == "__main__":
             optimizer.step()
             loss_for_epoch += loss.item()
         print(f"Epoch {e + 1} Loss {loss_for_epoch / num_batches:.4f}")
-    model.eval()
-    example_input = xs[0, ...].unsqueeze(0)
-    exported_program = torch.export.export(model, args=(example_input,))
+
+    example_input = xs[0, 0:5, :][None, ...]
+
+    exported_program = torch.export.export(
+        model,
+        args=(example_input,),
+        dynamic_shapes={
+            "x": {
+                1: torch.export.Dim("batch_size", min=1),
+            }
+        },
+    )
     torch.export.save(exported_program, "AbbyGPT.pt2")

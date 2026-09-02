@@ -2,7 +2,6 @@ from typing import cast
 
 import torch
 
-from my_tokenizer import MyCharTokenizer
 from settings import settings
 
 
@@ -44,15 +43,30 @@ class Inference:
 
 
 if __name__ == "__main__":
-    from inference import Inference
-    from my_tokenizer import MyCharTokenizer
+    from tokenizers import Tokenizer
 
-    tokenizer = MyCharTokenizer.load()
+    tokenizer = Tokenizer.from_file("./bpe_tokenizer.json")
     text = "I Love India"
-    token_indices: list[int] = cast(list[int], tokenizer.encode(text))
-    decodex_text: str = tokenizer.decode(token_indices)
-    assert decodex_text == text, "Something is wrong with Tokenizer"
+    pad_id = tokenizer.token_to_id("[PAD]")
+    token_ids = tokenizer.encode(text).ids
+
+    token_ids = token_ids[: settings.context_length]
+
+    token_ids += [pad_id] * (settings.context_length - len(token_ids))
+
+    token_indices = torch.tensor(
+        token_ids,
+        dtype=torch.long,
+        device=settings.device,
+    )[None, None, :]
+
+    decoded_text = tokenizer.decode(token_indices.squeeze(0).squeeze(0).tolist())
+    print(decoded_text)
     model = torch.export.load("./AbbyGPT.pt2").module()
-    infer = Inference(model=model, tokenizer=tokenizer)
-    op = infer.pre_training("How are ", 20)
-    print("OP --> ", op)
+    with torch.no_grad():
+        logits = model(token_indices)
+        print("=== Logits ===")
+        print(logits.shape)
+        pred: int = int(torch.argmax(logits[:, -1, :]).item())
+
+        print(tokenizer.decode([pred]))
