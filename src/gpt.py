@@ -23,11 +23,8 @@ class AbbyGPT(nn.Module):
         self.posn_encodings = PositionalEncoding().to(settings.device)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        x = x.flatten(0, 1)
+        assert x.ndim == 2, "AbbyGPT expects 2D input matrix"
         x = self.embedding_layer(x)
-
-        if x.ndim == 2:
-            x = torch.unsqueeze(x, 0)
         x = self.posn_encodings(x)
         x = self.rms_norm(x)
         for block in self.trf_blocks:

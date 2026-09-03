@@ -50,11 +50,12 @@ if __name__ == "__main__":
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     model.train()
 
+    min_loss = float("inf")
     for e in range(settings.epochs):
         loss_for_epoch: float = 0
         for i in range(num_batches):
             optimizer.zero_grad()
-            probs = model(xs[i, ...].unsqueeze(0))
+            probs = model(xs[i, ...])
 
             loss = loss_func(
                 probs.flatten(0, 1), ys[i, ...].flatten()
@@ -62,17 +63,22 @@ if __name__ == "__main__":
             loss.backward()
             optimizer.step()
             loss_for_epoch += loss.item()
-        print(f"Epoch {e + 1} Loss {loss_for_epoch / num_batches:.4f}")
+        average_loss_epoch = loss_for_epoch / num_batches
+        print(f"Epoch {e + 1} Loss {average_loss_epoch:.4f}")
+        if average_loss_epoch < min_loss:
+            min_loss = average_loss_epoch
+            torch.save(model.state_dict(), "./AbbyGPT.pt")
 
-    example_input = xs[0, 0:5, :][None, ...]
+    if False:
+        example_input = xs[0, 0:5, :]
 
-    exported_program = torch.export.export(
-        model,
-        args=(example_input,),
-        dynamic_shapes={
-            "x": {
-                1: torch.export.Dim("batch_size", min=1),
-            }
-        },
-    )
-    torch.export.save(exported_program, "AbbyGPT.pt2")
+        exported_program = torch.export.export(
+            model,
+            args=(example_input,),
+            dynamic_shapes={
+                "x": {
+                    0: torch.export.Dim("batch_size", min=1),
+                }
+            },
+        )
+        torch.export.save(exported_program, "AbbyGPT.pt2")
