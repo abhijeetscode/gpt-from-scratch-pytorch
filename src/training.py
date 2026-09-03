@@ -68,17 +68,3 @@ if __name__ == "__main__":
         if average_loss_epoch < min_loss:
             min_loss = average_loss_epoch
             torch.save(model.state_dict(), "./AbbyGPT.pt")
-
-    if False:
-        example_input = xs[0, 0:5, :]
-
-        exported_program = torch.export.export(
-            model,
-            args=(example_input,),
-            dynamic_shapes={
-                "x": {
-                    0: torch.export.Dim("batch_size", min=1),
-                }
-            },
-        )
-        torch.export.save(exported_program, "AbbyGPT.pt2")
