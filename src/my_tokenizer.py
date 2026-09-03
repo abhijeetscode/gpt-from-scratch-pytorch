@@ -1,5 +1,7 @@
 import torch
 
+from settings import settings
+
 
 def train_mybpe_tokenizer():
     from tokenizers import (
@@ -19,11 +21,12 @@ def train_mybpe_tokenizer():
     tokenizer.decoder = decoders.ByteLevel()
     my_trainer = trainers.BpeTrainer(
         min_frequency=2,
-        special_tokens=["[BOS]", "[EOS]", "[PAD]"],
+        special_tokens=["<EOS>"],
         show_progress=True,
+        vocab_size=1000,
     )
     tokenizer.train(
-        files=["/Users/ab/Documents/Personal/rope_moe/data/verdict.txt"],
+        files=[str(settings.train_file)],
         trainer=my_trainer,
     )
     tokenizer.save("./bpe_tokenizer.json")

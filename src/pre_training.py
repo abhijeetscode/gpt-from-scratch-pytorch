@@ -1,70 +1,67 @@
+from pathlib import Path
+
 import torch
 from tokenizers import Tokenizer
 
 from gpt import AbbyGPT
 from settings import settings
+from utils import count_trainable_params, create_dataset
 
 if __name__ == "__main__":
-    with open("../data/verdict.txt") as fp:
-        data = fp.read()
-
     my_bpe_tokenizer = Tokenizer.from_file("./bpe_tokenizer.json")
-    encoding = my_bpe_tokenizer.encode(data)
-    token_indices: torch.Tensor = torch.Tensor(encoding.ids).to(
-        dtype=torch.long,
-        device=settings.device,
-    )
 
-    # assert torch.max(token_indices).item()+1 == tokenizer.vocab_size, "vocab size and max token index not matching"
-    print("Total number of tokens :: ", len(token_indices))
-    print("Vocab Size :: ", my_bpe_tokenizer.get_vocab_size())
+    train_token_indices = torch.Tensor(
+        my_bpe_tokenizer.encode(
+            Path(settings.train_file).read_text(encoding="utf-8"),
+        ).ids
+    ).to(dtype=torch.long, device=settings.device)
+    print("Train Tokens :: ", len(train_token_indices))
 
-    xts = []
-    yts = []
-
-    xs = []
-    ys = []
-
-    for i in range(
-        0, token_indices.shape[0] - settings.context_length, settings.context_length
-    ):
-        start_index, end_index = i, i + settings.context_length
-        x_train = token_indices[start_index:end_index].tolist()
-
-        y_train = token_indices[start_index + 1 : end_index + 1].tolist()
-        xts.append(x_train)
-        yts.append(y_train)
-        if len(xts) >= settings.batch_size and len(yts) >= settings.batch_size:
-            xs.append(xts)
-            ys.append(yts)
-            xts = []
-            yts = []
-    xs = torch.Tensor(xs).to(dtype=torch.long, device=settings.device)
-    ys = torch.Tensor(ys).to(dtype=torch.long, device=settings.device)
-
-    num_batches: int = xs.shape[0]
-    print("== Num Batches == ", num_batches)
+    val_token_indices = torch.Tensor(
+        my_bpe_tokenizer.encode(
+            Path(settings.val_file).read_text(encoding="utf-8"),
+        ).ids
+    ).to(dtype=torch.long, device=settings.device)
+    xs_train, ys_train = create_dataset(train_token_indices)
+    xs_val, ys_val = create_dataset(val_token_indices)
+    train_num_batches = xs_train.shape[0]
+    val_num_batches = xs_val.shape[0]
+    print("Train Num Batches :: ", train_num_batches)
 
     model = AbbyGPT(vocab_size=my_bpe_tokenizer.get_vocab_size()).to(settings.device)
+    print("Num Trainable Params :: ", count_trainable_params(model))
     loss_func = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     model.train()
 
-    min_loss = float("inf")
+    best_val_loss = float("inf")
     for e in range(settings.epochs):
+        model.train()
         loss_for_epoch: float = 0
-        for i in range(num_batches):
+        for i in range(train_num_batches):
             optimizer.zero_grad()
-            probs = model(xs[i, ...])
+            probs = model(xs_train[i, ...])
 
             loss = loss_func(
-                probs.flatten(0, 1), ys[i, ...].flatten()
+                probs.flatten(0, 1), ys_train[i, ...].flatten()
             )  # require raw logits
             loss.backward()
             optimizer.step()
             loss_for_epoch += loss.item()
-        average_loss_epoch = loss_for_epoch / num_batches
-        print(f"Epoch {e + 1} Loss {average_loss_epoch:.4f}")
-        if average_loss_epoch < min_loss:
-            min_loss = average_loss_epoch
-            torch.save(model.state_dict(), "./AbbyGPT.pt")
+
+        # calculate validation loss
+        model.eval()
+        total_val_loss = 0
+        with torch.no_grad():
+            for i in range(val_num_batches):
+                logits = model(xs_val[i, ...])
+                total_val_loss += loss_func(
+                    logits.flatten(0, 1), ys_val[i, ...].flatten()
+                ).item()
+            avg_val_loss = total_val_loss / val_num_batches
+            if best_val_loss > avg_val_loss:
+                best_val_loss = avg_val_loss
+                torch.save(model.state_dict(), "AbbyGPT_StateDict.pt")
+        print(
+            f"Epoch {e + 1} Training Loss {loss_for_epoch / train_num_batches:.4f} Validation Loss {avg_val_loss:.4f}"
+        )

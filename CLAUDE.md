@@ -19,10 +19,10 @@ GPT from scratch, hand-rolled, for learning. Char-level tokenizer, RoPE/MoE are 
 
 ## Running it
 
-**Run from `src/`.** Modules use flat imports (`from gpt import AbbyGPT`) and `training.py` opens `../data/verdict.txt`.
+**Run from `src/`.** Modules use flat imports (`from gpt import AbbyGPT`) and `pre_training.py` opens `../data/verdict.txt`.
 
 ```bash
-cd src && ../.venv/bin/python training.py
+cd src && ../.venv/bin/python pre_training.py
 ```
 
 `uv` manages the env (`.venv/`, Python 3.14). Debug configs live in `.vscode/launch.json` (F5) — they set `cwd` to `src/` for the reasons above.
@@ -32,7 +32,7 @@ All hyperparameters are in `src/settings.py` (pydantic-settings). Device is `mps
 ## Shape conventions
 
 `B` batch, `L` sequence length, `E` embedding dim, `D` head dim, `T` tile size.
-Tensors flow as `(B, L, E)`. `AbbyGPT.forward` unsqueezes 1-D token input to `(1, L)`.
+Token inputs to `AbbyGPT.forward` must be `(B, L)` integer indices; embedded tensors flow as `(B, L, E)`. The model explicitly rejects 1-D input.
 
 Sequence length must come from the tensor (`x.shape[-2]`), never from `settings.context_length` — variable-length input is a requirement, and `L` is often not a multiple of `T`, so the last tile is partial.
 
@@ -40,11 +40,11 @@ Sequence length must come from the tensor (`x.shape[-2]`), never from `settings.
 
 The trustworthy check for `flash_attention.py` is comparing against plain reference causal softmax attention across lengths that exercise partial tiles (L = 1, 2, 3, 5, 7, 15, 16). Expect ~1e-7 in float32. `L=1` and any `L` divisible by `T` pass even with broken tiling — they are not evidence.
 
-`training.py` first-step loss is ~4.16 at `L=16`; a change there means something in the `L=16` path moved.
+The training entry point is `pre_training.py`. Its checkpoint is `AbbyGPT.pt`, a `state_dict` that must be loaded into a fresh `AbbyGPT` instance.
 
 ## Known open issues (not fixed unless I ask)
 
-- `inference.py:15` — `num_token_to_predict` is unused; it argmaxes every position instead of generating autoregressively.
+- `inference.py` performs one greedy next-token prediction; it is not an autoregressive generation loop.
 - One shared `RMSNorm` instance is reused at every norm site in `gpt.py` / `trf.py`. Harmless while it has no parameters; becomes accidental weight sharing the moment a learnable gain is added.
 - `MultiHeadAttention` has no output projection (`W_o`).
 - `PositionalEncoding` table is `context_length` long and silently truncates if `L` exceeds it.

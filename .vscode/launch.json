@@ -2,10 +2,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Debug: training.py",
+      "name": "Debug: pre_training.py",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/src/training.py",
+      "program": "${workspaceFolder}/src/pre_training.py",
       "cwd": "${workspaceFolder}/src",
       "console": "integratedTerminal",
       "justMyCode": false,
