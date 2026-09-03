@@ -1,3 +1,7 @@
+import torch
+from tokenizers import Tokenizer
+
+from gpt import AbbyGPT
 from settings import settings
 
 
@@ -25,7 +29,10 @@ def model_inference(
     model.eval()
 
     for _ in range(num_token_to_predict):
-        logits = model(tokens[:current_length].unsqueeze(0))
+        context_tokens = tokens[
+            max(0, current_length - settings.context_length) : current_length
+        ]
+        logits = model(context_tokens.unsqueeze(0))
         pred_token = torch.argmax(logits[:, -1, :], dim=-1).item()
         tokens[current_length] = pred_token
         current_length += 1
@@ -35,16 +42,11 @@ def model_inference(
 
 
 if __name__ == "__main__":
-    import torch
-    from tokenizers import Tokenizer
-
-    from gpt import AbbyGPT
-
     my_tokenizer = Tokenizer.from_file("./bpe_tokenizer.json")
     abbygpt = AbbyGPT(vocab_size=my_tokenizer.get_vocab_size())
     abbygpt.load_state_dict(torch.load("./AbbyGPT_StateDict.pt"))
 
     op = model_inference(
-        model=abbygpt, tokenizer=my_tokenizer, x="I am", num_token_to_predict=10
+        model=abbygpt, tokenizer=my_tokenizer, x="I am", num_token_to_predict=100
     )
     print(op)
