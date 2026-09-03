@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     tile_size: int = 2
     device: torch.device = torch.device("mps" if torch.mps.is_available() else "cpu")
     num_trf_blocks: int = 1
-    epochs: int = 1
+    epochs: int = 10
 
     batch_size: int = 32
     train_split: float = 0.9
