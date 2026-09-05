@@ -34,6 +34,10 @@ if __name__ == "__main__":
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     model.train()
 
+    patience: int = 10
+    epochs_without_improvements: int = 0
+    is_early_stop: bool = False
+    min_delta: float = 0.001
     best_val_loss = float("inf")
     for e in range(settings.epochs):
         model.train()
@@ -59,9 +63,17 @@ if __name__ == "__main__":
                     logits.flatten(0, 1), ys_val[i, ...].flatten()
                 ).item()
             avg_val_loss = total_val_loss / val_num_batches
-            if best_val_loss > avg_val_loss:
+            if avg_val_loss < best_val_loss - min_delta:
                 best_val_loss = avg_val_loss
                 torch.save(model.state_dict(), "AbbyGPT_StateDict.pt")
+                epochs_without_improvements = 0
+            else:
+                epochs_without_improvements += 1
+            if epochs_without_improvements >= patience:
+                print("=== Early Stopping ===")
+                is_early_stop = True
         print(
             f"Epoch {e + 1} Training Loss {loss_for_epoch / train_num_batches:.4f} Validation Loss {avg_val_loss:.4f}"
         )
+        if is_early_stop:
+            break

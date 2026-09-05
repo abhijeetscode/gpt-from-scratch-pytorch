@@ -9,12 +9,12 @@ class Settings(BaseSettings):
     train_file: Path = Path("../data/tiny_stories_train.txt")
     val_file: Path = Path("../data/tiny_stories_val.txt")
     context_length: int = 32
-    embedding_dim: int = 10
+    embedding_dim: int = 32
     num_heads: int = 2
     tile_size: int = 2
     device: torch.device = torch.device("mps" if torch.mps.is_available() else "cpu")
     num_trf_blocks: int = 1
-    epochs: int = 10
+    epochs: int = 100
 
     batch_size: int = 32
     train_split: float = 0.9
