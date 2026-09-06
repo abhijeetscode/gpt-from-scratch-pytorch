@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     source_datafile: Path = Path("../data/tiny_stories.txt")
     train_file: Path = Path("../data/tiny_stories_train.txt")
     val_file: Path = Path("../data/tiny_stories_val.txt")
+    sft_file: Path = Path("../data/sft_100.json")
     context_length: int = 32
     embedding_dim: int = 32
     num_heads: int = 2

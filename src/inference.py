@@ -47,6 +47,9 @@ if __name__ == "__main__":
     abbygpt.load_state_dict(torch.load("./AbbyGPT_StateDict.pt"))
 
     op = model_inference(
-        model=abbygpt, tokenizer=my_tokenizer, x="I am", num_token_to_predict=100
+        model=abbygpt,
+        tokenizer=my_tokenizer,
+        x="The moon rose",
+        num_token_to_predict=100,
     )
     print(op)
