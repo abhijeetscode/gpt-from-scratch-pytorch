@@ -1,0 +1,299 @@
+User: Say hello.
+Assistant: Hello!
+
+User: Say goodbye.
+Assistant: Goodbye!
+
+User: What is two plus two?
+Assistant: Four.
+
+User: What is three plus five?
+Assistant: Eight.
+
+User: What is ten minus four?
+Assistant: Six.
+
+User: What is seven minus two?
+Assistant: Five.
+
+User: What is three times three?
+Assistant: Nine.
+
+User: What is ten divided by two?
+Assistant: Five.
+
+User: Name a color.
+Assistant: Blue.
+
+User: Name an animal.
+Assistant: Cat.
+
+User: Name a fruit.
+Assistant: Apple.
+
+User: Name a shape.
+Assistant: Circle.
+
+User: Name a season.
+Assistant: Summer.
+
+User: What color is grass?
+Assistant: Green.
+
+User: What color is the sky?
+Assistant: Blue.
+
+User: What sound does a cat make?
+Assistant: Meow.
+
+User: What sound does a dog make?
+Assistant: Woof.
+
+User: What do bees make?
+Assistant: Honey.
+
+User: What do cows give?
+Assistant: Milk.
+
+User: What has four wheels?
+Assistant: A car.
+
+User: Finish this: red, blue, and
+Assistant: green.
+
+User: Finish this: one, two, three,
+Assistant: four.
+
+User: Finish this: day and
+Assistant: night.
+
+User: Finish this: hot and
+Assistant: cold.
+
+User: Finish this: up and
+Assistant: down.
+
+User: Is fire hot?
+Assistant: Yes.
+
+User: Is ice cold?
+Assistant: Yes.
+
+User: Can fish swim?
+Assistant: Yes.
+
+User: Can birds fly?
+Assistant: Yes.
+
+User: Is the sun bright?
+Assistant: Yes.
+
+User: Is one greater than two?
+Assistant: No.
+
+User: Can a rock talk?
+Assistant: No.
+
+User: Is water dry?
+Assistant: No.
+
+User: Can a book eat?
+Assistant: No.
+
+User: Is snow warm?
+Assistant: No.
+
+User: Be polite: Give water.
+Assistant: Please give water.
+
+User: Be polite: Open door.
+Assistant: Please open door.
+
+User: Make this polite: Help me now.
+Assistant: Please help me.
+
+User: Say thanks.
+Assistant: Thank you.
+
+User: Reply to: Thank you.
+Assistant: You are welcome.
+
+User: Make this lowercase: HELLO.
+Assistant: hello.
+
+User: Make this uppercase: hello.
+Assistant: HELLO.
+
+User: Make this lowercase: CAT.
+Assistant: cat.
+
+User: Make this uppercase: dog.
+Assistant: DOG.
+
+User: What is the first letter of apple?
+Assistant: A.
+
+User: What is the last letter of cat?
+Assistant: T.
+
+User: How many letters are in dog?
+Assistant: Three.
+
+User: How many letters are in sun?
+Assistant: Three.
+
+User: Bigger: cat or elephant?
+Assistant: Elephant.
+
+User: Which is smaller: mouse or horse?
+Assistant: Mouse.
+
+User: Which comes first: A or B?
+Assistant: A.
+
+User: Which comes last: Monday or Tuesday?
+Assistant: Tuesday.
+
+User: What comes after Monday?
+Assistant: Tuesday.
+
+User: What comes before Friday?
+Assistant: Thursday.
+
+User: How many days are in a week?
+Assistant: Seven.
+
+User: How many months are in a year?
+Assistant: Twelve.
+
+User: How many hours are in a day?
+Assistant: Twenty four.
+
+User: How many minutes are in an hour?
+Assistant: Sixty.
+
+User: What do you wear on your head?
+Assistant: A hat.
+
+User: What do you wear on your feet?
+Assistant: Shoes.
+
+User: What do you use to write?
+Assistant: A pen.
+
+User: What do you use to cut paper?
+Assistant: Scissors.
+
+User: Where do fish live?
+Assistant: Water.
+
+User: Where do birds build nests?
+Assistant: In trees.
+
+User: Where do you sleep?
+Assistant: In a bed.
+
+User: Where do books go?
+Assistant: On a shelf.
+
+User: What should you say when sorry?
+Assistant: I am sorry.
+
+User: What should you say when you need help?
+Assistant: Please help me.
+
+User: Before crossing a road?
+Assistant: Look both ways.
+
+User: What should you do with a library book?
+Assistant: Return it.
+
+User: Explain rain.
+Assistant: Water falls from clouds.
+
+User: Explain a book.
+Assistant: A book has words.
+
+User: Explain a tree.
+Assistant: A tree is a plant.
+
+User: Explain a clock.
+Assistant: A clock tells time.
+
+User: Give one happy word.
+Assistant: Joy.
+
+User: Give one sad word.
+Assistant: Tears.
+
+User: Give one kind word.
+Assistant: Please.
+
+User: Give one magic word.
+Assistant: Abracadabra.
+
+User: Poem: cat.
+Assistant: Cat naps in sun.
+
+User: Poem: rain.
+Assistant: Rain sings on roofs.
+
+User: Poem: stars.
+Assistant: Stars shine at night.
+
+User: Poem: dog.
+Assistant: Dog runs with joy.
+
+User: Tell a joke.
+Assistant: Cat naps because tired.
+
+User: Tell a tiny story.
+Assistant: A fox found a red ball.
+
+User: Story: bird.
+Assistant: Bird sang at dawn.
+
+User: Story: seed.
+Assistant: Seed grew into flower.
+
+User: What is the opposite of big?
+Assistant: Small.
+
+User: What is the opposite of fast?
+Assistant: Slow.
+
+User: What is the opposite of light?
+Assistant: Dark.
+
+User: What is the opposite of happy?
+Assistant: Sad.
+
+User: Order: three, one, two.
+Assistant: One, two, three.
+
+User: Put these in order: C, A, B.
+Assistant: A, B, C.
+
+User: Count from one to three.
+Assistant: One, two, three.
+
+User: Count down from three.
+Assistant: Three, two, one.
+
+User: What is one plus one?
+Assistant: Two.
+
+User: What is four plus four?
+Assistant: Eight.
+
+User: What is nine minus one?
+Assistant: Eight.
+
+User: What is six minus three?
+Assistant: Three.
+
+User: Say yes.
+Assistant: Yes.
+
+User: Say no.
+Assistant: No.

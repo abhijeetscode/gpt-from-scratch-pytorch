@@ -30,15 +30,66 @@ Epoch 3 sat almost exactly on the unigram floor. Everything below 6.82 is attent
 
 ---
 
+## Progress tracker
+
+`[x]` done and verified · `[~]` partially done · `[ ]` not started
+
+| # | Task | Done | Blocks | Silent if wrong |
+| --- | --- | :---: | --- | :---: |
+| 1 | Fix model input contract | **[x]** | everything | — |
+| 2 | Save fine-tunable checkpoint | **[~]** | 3, 7 | — |
+| 3 | Validation split | [ ] | 4 (interpretability) | — |
+| 4 | Scale window + training run | [ ] | 6, 7 | — |
+| 5 | Shuffle batches | [ ] | — | **yes** |
+| 6 | `[EOS]` in token stream | [ ] | 7 | — |
+| 7 | Label masking in loss | [ ] | — | **yes, worst** |
+| 8 | Grow the corpus | [ ] | meaning of 3-7 | — |
+
+**Gate: SFT can begin when 1-7 are checked and val loss is single-digit perplexity.**
+Task 8 is not strictly a gate, but 3-7 tell you little without it.
+
+### ⚠ Do task 3 before task 4
+
+`training.py:68-70` now checkpoints on **best training loss**. Training loss falls
+monotonically past the point of generalisation, so "best" converges on the most
+overfit checkpoint ever produced. Harmless at 3 epochs; actively harmful the moment
+task 4 raises `epochs` to 100+. Gate the save on `val_loss` instead.
+
+This failure is silent — the printed number improves while the saved weights get worse.
+
+---
+
 ## Task order
 
 Ordering is deliberate. Each task either unblocks the next or would be **hidden** by doing a later one first.
 
-### 1. Fix the model input contract
+### 1. Fix the model input contract — **DONE** (verified 2026-09-03)
 
 **Files:** `gpt.py:26`, `training.py:57`
 
-Delete `x = x.flatten(0, 1)` from `gpt.py`, delete `.unsqueeze(0)` from the `training.py` forward call. Verified bit-identical output (maxdiff `0.0`, same loss) without them.
+- [x] Delete `x = x.flatten(0, 1)` from `gpt.py:26`
+- [x] Delete `.unsqueeze(0)` from the `training.py:57` forward call
+- [x] Add the `assert x.ndim == 2` contract line
+- [x] Remove the now-dead `if x.ndim == 2: unsqueeze` branch
+- [x] Update `inference.py` to send `(1, n)`
+- [x] Discriminating test passes
+
+Verified bit-identical output (maxdiff `0.0`, same loss) without the flatten/unsqueeze pair.
+
+Measured after the fix:
+
+```
+(32, 16)    -> (32, 16, 1605)      (8,)        -> rejected: AbbyGPT expects 2D input matrix
+(1, 16)     -> (1, 16, 1605)       (1, 32, 16) -> rejected: AbbyGPT expects 2D input matrix
+(1, 8)      -> (1, 8, 1605)
+(4, 5)      -> (4, 5, 1605)
+```
+
+Caveat: `inference.py` now only does a **single** next-token step — the `Inference`
+class and its sliding-window generation were removed. When generation is rebuilt,
+re-test the traps: window must be `tokens[max(0, cur - context_length) : cur]`, read
+the real last position (`n - 1` once padding enters, never `-1`), and use a prompt
+where `prompt + generated > context_length`. Anything shorter passes with broken slicing.
 
 Settle on one contract — `(B, L)` always, single input is `(1, L)`:
 
@@ -68,9 +119,30 @@ Callers to update: `inference.py` window becomes `tokens[start:cur].unsqueeze(0)
 
 ---
 
-### 2. Save a fine-tunable checkpoint
+### 2. Save a fine-tunable checkpoint — **PARTIAL**
 
-**File:** `training.py:69-78`
+**File:** `training.py:68-70`
+
+- [x] Add `torch.save(model.state_dict(), "AbbyGPT.pt")`
+- [ ] Save the tokenizer beside it, in the same code path
+- [ ] Assert `tokenizer.get_vocab_size()` matches the checkpoint's embedding rows on load
+- [x] Discriminating test passes
+- [ ] Gate the save on **val** loss, not training loss (see task 3)
+
+Measured:
+
+```
+state_dict loads into fresh AbbyGPT: OK, 171 tensors
+backward() works: 171/171 params got grads
+embedding rows: (1605, 128)   vocab: 1605
+10 MB (vs 63 MB for the exported program)
+```
+
+`bpe_tokenizer.json` and `AbbyGPT.pt` both live in `src/` but are written by different
+code at different times, and nothing enforces that they agree. A regenerated tokenizer
+with a *different* `vocab_size` makes `load_state_dict` throw — loud, fine. Same size
+with a different merge order loads clean and emits garbage — silent. Hence the two
+open boxes above.
 
 `torch.export.save` produces an `ExportedProgram` — a frozen inference graph. No `train()`, no gradients, not loadable into `AbbyGPT`. **SFT literally cannot start from it.**
 
@@ -79,6 +151,8 @@ torch.save(model.state_dict(), "AbbyGPT.pt")
 ```
 
 Keep the export too if you want, but `state_dict` is the SFT input. Also ~9 MB vs 63 MB.
+
+Tokenizer and weights must ship as a **pair**. `fit`/BPE training assigns ids by first-appearance order, so a re-derived tokenizer can have the same `vocab_size` and a different mapping — the model then runs and emits garbage, with no error.
 
 **Why second:** without it there is no artifact to fine-tune, so nothing below can be tested end to end.
 
@@ -89,6 +163,13 @@ Keep the export too if you want, but `state_dict` is the SFT input. Also ~9 MB v
 ### 3. Add a validation split
 
 **File:** `training.py`, chunk-building loop
+
+- [ ] Hold out the last ~10% of chunks as val
+- [ ] Report train **and** val loss every epoch
+- [ ] Wrap val in `torch.no_grad()` and `model.eval()`, restore `model.train()` after
+- [x] Divide epoch loss by `num_batches` — done, `training.py:66`
+- [ ] Change the checkpoint gate at `training.py:68` from `average_loss_epoch` to `val_loss`
+- [ ] Discriminating test passes (seen the divergence)
 
 Hold out the last ~10% of chunks. Report train and val loss each epoch.
 
@@ -102,9 +183,12 @@ Hold out the last ~10% of chunks. Report train and val loss each epoch.
 
 **Files:** `settings.py`
 
-- `context_length: 16 → 128` (or more). 16 tokens ≈ 60 characters. An instruction plus a response does not fit in 60 characters — this is a hard architectural blocker, not a tuning knob.
-- `epochs: 1 → 100+`. Watch val loss (task 3) to pick the stopping point.
-- `batch_size`: keep at 32 or below; at 512 only 2 batches exist and 20% of chunks get dropped.
+- [ ] `context_length: 16 → 128` (or more). 16 tokens ≈ 60 characters. An instruction plus a response does not fit in 60 characters — hard architectural blocker, not a tuning knob.
+- [ ] `epochs: 1 → 100+`. Watch val loss (task 3) to pick the stopping point.
+- [ ] `batch_size`: keep at 32 or below; at 512 only 2 batches exist and 20% of chunks get dropped.
+- [ ] Add `torch.manual_seed(0)` and re-record the loss landmarks in this file
+- [ ] Attention-vs-reference check re-run at the new `context_length`
+- [ ] Val loss below the 6.8165 unigram floor on **held-out** data
 
 Constraints to respect:
 - `flash_attention.py` asserts `context_length % tile_size == 0`. `tile_size = 2`, so any even value works.
@@ -118,6 +202,10 @@ Constraints to respect:
 ### 5. Shuffle the batches
 
 **File:** `training.py`, batch-building loop
+
+- [ ] Build flat `(n_chunks, L)` once instead of a frozen `(n_batches, B, L)`
+- [ ] Draw a fresh `torch.randperm` each epoch
+- [ ] Discriminating test passes (epoch 1 batch 0 ≠ epoch 2 batch 0)
 
 Currently batch 0 is literally the first 128 contiguous characters of the book, split 8 ways, and the order is identical every epoch. Effective batch size is far below the nominal one.
 
@@ -142,6 +230,12 @@ assert not torch.equal(epoch1_first_batch, epoch2_first_batch)
 
 **File:** whatever script builds `bpe_tokenizer.json`
 
+- [ ] Add a `TemplateProcessing` post-processor wrapping each example
+- [ ] Confirm `[EOS]` (id 1) actually appears in the encoded stream
+- [ ] Update the lossless assert to the new invariant — do **not** loosen it
+- [ ] Re-save `bpe_tokenizer.json` and re-run the round-trip check
+- [ ] Discriminating test passes
+
 Currently `post_processor: None`, and `[BOS]`/`[EOS]`/`[PAD]` (ids 0/1/2) **never appear in the data** — verified. They are dead vocab rows.
 
 Without `[EOS]` the model cannot learn where a response ends. Generation runs to the token budget and stops mid-word. This is the single clearest difference between a base LM and something SFT-able.
@@ -157,6 +251,15 @@ Add a `TemplateProcessing` post-processor that wraps each training example.
 ### 7. Label masking in the loss
 
 **File:** `training.py:49`
+
+- [ ] `CrossEntropyLoss(ignore_index=-100)`
+- [ ] Set `y = -100` at every **prompt** position
+- [ ] Set `y = -100` at every **pad** position
+- [ ] Right-pad (never left-pad — shifts positions and lets pads be attended)
+- [ ] Read logits at `n - 1`, never `-1`
+- [ ] Discriminating test passes
+
+Do all six in **one** change — see the warning below.
 
 SFT trains on **response tokens only** — no gradient on the instruction you fed in.
 
@@ -177,6 +280,9 @@ Trap: a batch with no padding and no prompt passes with masking completely broke
 ---
 
 ### 8. Grow the corpus
+
+- [ ] Base corpus grown beyond `verdict.txt`
+- [ ] Loss landmarks in this file re-measured on the new corpus (vocab and unigram entropy both change)
 
 `verdict.txt` is 5,251 tokens. For 2.18M params, a Chinchilla-ish rule of thumb wants ~43M — four orders of magnitude more. Treat as an order-of-magnitude illustration, not a law, but the conclusion holds: **this corpus cannot produce a language-capable base model.**
 

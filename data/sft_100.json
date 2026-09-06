@@ -1,0 +1,402 @@
+[
+  {
+    "user": "Say hello.",
+    "assistant": "Hello!<EOS>"
+  },
+  {
+    "user": "Say goodbye.",
+    "assistant": "Goodbye!<EOS>"
+  },
+  {
+    "user": "What is two plus two?",
+    "assistant": "Four.<EOS>"
+  },
+  {
+    "user": "What is three plus five?",
+    "assistant": "Eight.<EOS>"
+  },
+  {
+    "user": "What is ten minus four?",
+    "assistant": "Six.<EOS>"
+  },
+  {
+    "user": "What is seven minus two?",
+    "assistant": "Five.<EOS>"
+  },
+  {
+    "user": "What is three times three?",
+    "assistant": "Nine.<EOS>"
+  },
+  {
+    "user": "What is ten divided by two?",
+    "assistant": "Five.<EOS>"
+  },
+  {
+    "user": "Name a color.",
+    "assistant": "Blue.<EOS>"
+  },
+  {
+    "user": "Name an animal.",
+    "assistant": "Cat.<EOS>"
+  },
+  {
+    "user": "Name a fruit.",
+    "assistant": "Apple.<EOS>"
+  },
+  {
+    "user": "Name a shape.",
+    "assistant": "Circle.<EOS>"
+  },
+  {
+    "user": "Name a season.",
+    "assistant": "Summer.<EOS>"
+  },
+  {
+    "user": "What color is grass?",
+    "assistant": "Green.<EOS>"
+  },
+  {
+    "user": "What color is the sky?",
+    "assistant": "Blue.<EOS>"
+  },
+  {
+    "user": "What sound does a cat make?",
+    "assistant": "Meow.<EOS>"
+  },
+  {
+    "user": "What sound does a dog make?",
+    "assistant": "Woof.<EOS>"
+  },
+  {
+    "user": "What do bees make?",
+    "assistant": "Honey.<EOS>"
+  },
+  {
+    "user": "What do cows give?",
+    "assistant": "Milk.<EOS>"
+  },
+  {
+    "user": "What has four wheels?",
+    "assistant": "A car.<EOS>"
+  },
+  {
+    "user": "Finish this: red, blue, and",
+    "assistant": "green.<EOS>"
+  },
+  {
+    "user": "Finish this: one, two, three,",
+    "assistant": "four.<EOS>"
+  },
+  {
+    "user": "Finish this: day and",
+    "assistant": "night.<EOS>"
+  },
+  {
+    "user": "Finish this: hot and",
+    "assistant": "cold.<EOS>"
+  },
+  {
+    "user": "Finish this: up and",
+    "assistant": "down.<EOS>"
+  },
+  {
+    "user": "Is fire hot?",
+    "assistant": "Yes.<EOS>"
+  },
+  {
+    "user": "Is ice cold?",
+    "assistant": "Yes.<EOS>"
+  },
+  {
+    "user": "Can fish swim?",
+    "assistant": "Yes.<EOS>"
+  },
+  {
+    "user": "Can birds fly?",
+    "assistant": "Yes.<EOS>"
+  },
+  {
+    "user": "Is the sun bright?",
+    "assistant": "Yes.<EOS>"
+  },
+  {
+    "user": "Is one greater than two?",
+    "assistant": "No.<EOS>"
+  },
+  {
+    "user": "Can a rock talk?",
+    "assistant": "No.<EOS>"
+  },
+  {
+    "user": "Is water dry?",
+    "assistant": "No.<EOS>"
+  },
+  {
+    "user": "Can a book eat?",
+    "assistant": "No.<EOS>"
+  },
+  {
+    "user": "Is snow warm?",
+    "assistant": "No.<EOS>"
+  },
+  {
+    "user": "Be polite: Give water.",
+    "assistant": "Please give water.<EOS>"
+  },
+  {
+    "user": "Polite: Open.",
+    "assistant": "Please open door.<EOS>"
+  },
+  {
+    "user": "Make this polite: Help me now.",
+    "assistant": "Please help me.<EOS>"
+  },
+  {
+    "user": "Say thanks.",
+    "assistant": "Thank you.<EOS>"
+  },
+  {
+    "user": "Reply to: Thank you.",
+    "assistant": "You are welcome.<EOS>"
+  },
+  {
+    "user": "Make this lowercase: HELLO.",
+    "assistant": "hello.<EOS>"
+  },
+  {
+    "user": "Make this uppercase: hello.",
+    "assistant": "HELLO.<EOS>"
+  },
+  {
+    "user": "Make this lowercase: CAT.",
+    "assistant": "cat.<EOS>"
+  },
+  {
+    "user": "Make this uppercase: dog.",
+    "assistant": "DOG.<EOS>"
+  },
+  {
+    "user": "What is the first letter of apple?",
+    "assistant": "A.<EOS>"
+  },
+  {
+    "user": "What is the last letter of cat?",
+    "assistant": "T.<EOS>"
+  },
+  {
+    "user": "How many letters are in dog?",
+    "assistant": "Three.<EOS>"
+  },
+  {
+    "user": "How many letters are in sun?",
+    "assistant": "Three.<EOS>"
+  },
+  {
+    "user": "Bigger: cat or elephant?",
+    "assistant": "Elephant.<EOS>"
+  },
+  {
+    "user": "Which is smaller: mouse or horse?",
+    "assistant": "Mouse.<EOS>"
+  },
+  {
+    "user": "Which comes first: A or B?",
+    "assistant": "A.<EOS>"
+  },
+  {
+    "user": "Which comes last: Monday or Tuesday?",
+    "assistant": "Tuesday.<EOS>"
+  },
+  {
+    "user": "What comes after Monday?",
+    "assistant": "Tuesday.<EOS>"
+  },
+  {
+    "user": "What comes before Friday?",
+    "assistant": "Thursday.<EOS>"
+  },
+  {
+    "user": "How many days are in a week?",
+    "assistant": "Seven.<EOS>"
+  },
+  {
+    "user": "How many months are in a year?",
+    "assistant": "Twelve.<EOS>"
+  },
+  {
+    "user": "How many hours are in a day?",
+    "assistant": "Twenty four.<EOS>"
+  },
+  {
+    "user": "How many minutes are in an hour?",
+    "assistant": "Sixty.<EOS>"
+  },
+  {
+    "user": "What do you wear on your head?",
+    "assistant": "A hat.<EOS>"
+  },
+  {
+    "user": "What do you wear on your feet?",
+    "assistant": "Shoes.<EOS>"
+  },
+  {
+    "user": "What do you use to write?",
+    "assistant": "A pen.<EOS>"
+  },
+  {
+    "user": "What do you use to cut paper?",
+    "assistant": "Scissors.<EOS>"
+  },
+  {
+    "user": "Where do fish live?",
+    "assistant": "Water.<EOS>"
+  },
+  {
+    "user": "Where do birds build nests?",
+    "assistant": "In trees.<EOS>"
+  },
+  {
+    "user": "Where do you sleep?",
+    "assistant": "In a bed.<EOS>"
+  },
+  {
+    "user": "Where do books go?",
+    "assistant": "On a shelf.<EOS>"
+  },
+  {
+    "user": "What should you say when sorry?",
+    "assistant": "I am sorry.<EOS>"
+  },
+  {
+    "user": "What should you say when you need help?",
+    "assistant": "Please help me.<EOS>"
+  },
+  {
+    "user": "Before crossing a road?",
+    "assistant": "Look both ways.<EOS>"
+  },
+  {
+    "user": "What should you do with a library book?",
+    "assistant": "Return it.<EOS>"
+  },
+  {
+    "user": "Explain rain.",
+    "assistant": "Water falls from clouds.<EOS>"
+  },
+  {
+    "user": "Explain a book.",
+    "assistant": "A book has words.<EOS>"
+  },
+  {
+    "user": "Explain a tree.",
+    "assistant": "A tree is a plant.<EOS>"
+  },
+  {
+    "user": "Explain a clock.",
+    "assistant": "A clock tells time.<EOS>"
+  },
+  {
+    "user": "Give one happy word.",
+    "assistant": "Joy.<EOS>"
+  },
+  {
+    "user": "Give one sad word.",
+    "assistant": "Tears.<EOS>"
+  },
+  {
+    "user": "Give one kind word.",
+    "assistant": "Please.<EOS>"
+  },
+  {
+    "user": "Give one magic word.",
+    "assistant": "Abracadabra.<EOS>"
+  },
+  {
+    "user": "Poem: cat.",
+    "assistant": "Cat naps in sun.<EOS>"
+  },
+  {
+    "user": "Poem: rain.",
+    "assistant": "Rain sings on roofs.<EOS>"
+  },
+  {
+    "user": "Poem: stars.",
+    "assistant": "Stars shine at night.<EOS>"
+  },
+  {
+    "user": "Poem: dog.",
+    "assistant": "Dog runs with joy.<EOS>"
+  },
+  {
+    "user": "Tell a joke.",
+    "assistant": "Cat naps because tired.<EOS>"
+  },
+  {
+    "user": "Tell a tiny story.",
+    "assistant": "A fox found a red ball.<EOS>"
+  },
+  {
+    "user": "Story: bird.",
+    "assistant": "Bird sang at dawn.<EOS>"
+  },
+  {
+    "user": "Story: seed.",
+    "assistant": "Seed grew into flower.<EOS>"
+  },
+  {
+    "user": "What is the opposite of big?",
+    "assistant": "Small.<EOS>"
+  },
+  {
+    "user": "What is the opposite of fast?",
+    "assistant": "Slow.<EOS>"
+  },
+  {
+    "user": "What is the opposite of light?",
+    "assistant": "Dark.<EOS>"
+  },
+  {
+    "user": "What is the opposite of happy?",
+    "assistant": "Sad.<EOS>"
+  },
+  {
+    "user": "Order: three, one, two.",
+    "assistant": "One, two, three.<EOS>"
+  },
+  {
+    "user": "Put these in order: C, A, B.",
+    "assistant": "A, B, C.<EOS>"
+  },
+  {
+    "user": "Count from one to three.",
+    "assistant": "One, two, three.<EOS>"
+  },
+  {
+    "user": "Count down from three.",
+    "assistant": "Three, two, one.<EOS>"
+  },
+  {
+    "user": "What is one plus one?",
+    "assistant": "Two.<EOS>"
+  },
+  {
+    "user": "What is four plus four?",
+    "assistant": "Eight.<EOS>"
+  },
+  {
+    "user": "What is nine minus one?",
+    "assistant": "Eight.<EOS>"
+  },
+  {
+    "user": "What is six minus three?",
+    "assistant": "Three.<EOS>"
+  },
+  {
+    "user": "Say yes.",
+    "assistant": "Yes.<EOS>"
+  },
+  {
+    "user": "Say no.",
+    "assistant": "No.<EOS>"
+  }
+]

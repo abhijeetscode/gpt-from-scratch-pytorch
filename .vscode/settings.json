@@ -6,9 +6,10 @@
     "scminput": false
   },
   "github.copilot.editor.enableAutoCompletions": false,
+  
   "editor.inlineSuggest.enabled": false,
   "files.autoSave": "onFocusChange",
-  "terminal.integrated.fontFamily": "Fira Code iScript",
+  "terminal.integrated.fontFamily": "FiraCode Nerd Font",
   "terminal.integrated.fontSize": 16,
   "python-envs.defaultEnvManager": "ms-python.python:venv",
   "[python]": {
